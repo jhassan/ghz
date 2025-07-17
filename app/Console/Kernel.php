@@ -15,10 +15,10 @@ class Kernel extends ConsoleKernel
         // Example: Log something every minute
         $schedule->call(function () {
             \Log::info('Cron ran at ' . now());
-        })->everyMinute();
+        })->everyTenSeconds();
 
         // Or run a custom command every minute
-        $schedule->command('binance:fetch')->everyMinute();
+        $schedule->command('binance:fetch')->everyTenSeconds();
     }
 
     /**
