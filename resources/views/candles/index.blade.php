@@ -21,28 +21,24 @@
         <thead>
             <tr>
                 <th>Symbol</th>
-                <th>Interval</th>
-                <th>Open Time</th>
-                <th>Open</th>
-                <th>High</th>
-                <th>Low</th>
-                <th>Close</th>
+                <th>Type</th>
+                <th>Source</th>
+                <th>Sequence</th>
+                <th>Detected At</th>
             </tr>
         </thead>
         <tbody>
             @forelse($candles as $candle)
                 <tr>
                     <td>{{ $candle->symbol }}</td>
-                    <td>{{ $candle->interval }}</td>
-                    <td>{{ $candle->open_time }}</td>
-                    <td>{{ $candle->open }}</td>
-                    <td>{{ $candle->high }}</td>
-                    <td>{{ $candle->low }}</td>
-                    <td>{{ $candle->close }}</td>
+                    <td>{{ $candle->type }}</td>
+                    <td>{{ $candle->source }}</td>
+                    <td>{{ $candle->sequence }}</td>
+                    <td>{{ date('d-m-Y H:i:s', strtotime($candle->detected_at)) }}</td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="7">No records found.</td>
+                    <td colspan="5">No records found.</td>
                 </tr>
             @endforelse
         </tbody>
