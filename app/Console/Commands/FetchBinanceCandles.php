@@ -18,82 +18,82 @@ class FetchBinanceCandles extends Command
     {
 
           // 🔁 Hardcoded list of coin pairs
-        $symbols = [
-            "FISUSDT", "MDTUSDT", "VICUSDT", "REIUSDT", "LOKAUSDT", "PIVXUSDT", "VOXELUSDT", "MBOXUSDT", "COWUSDT", "FIOUSDT",
-            "BELUSDT", "NKNUSDT", "1MBABYDOGEUSDT", "ASRUSDT", "ADXUSDT", "GTCUSDT", "SCRTUSDT", "CVCUSDT", "SYSUSDT", "CYBERUSDT",
-            "IDEXUSDT", "RPLUSDT", "AUSDT", "HOOKUSDT", "DEGOUSDT", "NTRNUSDT", "CVXUSDT", "ATAUSDT", "CELOUSDT", "DUSDT", "DUSKUSDT",
-            "CKBUSDT", "HIFIUSDT", "UNIUSDT", "GLMRUSDT", "LSKUSDT", "SCUSDT", "1INCHUSDT", "PONDUSDT", "GLMUSDT", "SYNUSDT",
-            "SUPERUSDT", "QKCUSDT", "BARUSDT", "TNSRUSDT", "UTKUSDT", "MOVRUSDT", "POLUSDT", "SLFUSDT", "FLUXUSDT", "STOUSDT",
-            "FETUSDT", "HIVEUSDT", "ALCXUSDT", "FARMUSDT", "ZECUSDT", "GUSDT", "OXTUSDT", "WANUSDT", "BTTCUSDT", "SHIBUSDT",
-            "POLYXUSDT", "YGGUSDT", "NFPUSDT", "WAXPUSDT", "ARBUSDT", "FLOKIUSDT", "DODOUSDT", "BICOUSDT", "API3USDT", "ONEUSDT",
-            "MLNUSDT", "BATUSDT", "SKLUSDT", "XLMUSDT", "TFUELUSDT", "USUALUSDT", "DENTUSDT", "TLMUSDT", "HIGHUSDT", "STEEMUSDT",
-            "SAGAUSDT", "DYDXUSDT", "SLPUSDT", "PIXELUSDT", "DEXEUSDT", "SSVUSDT", "AUDIOUSDT", "XNOUSDT", "XTZUSDT", "WINUSDT",
-            "POWRUSDT", "TRBUSDT", "FILUSDT", "IQUSDT", "ETHUSDT", "WBETHUSDT", "RUNEUSDT", "FXSUSDT", "GNSUSDT", "LUMIAUSDT",
-            "TKOUSDT", "ATMUSDT", "GNOUSDT", "PENGUUSDT", "DYMUSDT", "REQUSDT", "RDNTUSDT", "TRUUSDT", "OGNUSDT", "AVAUSDT",
-            "CATIUSDT", "FLMUSDT", "EGLDUSDT", "XVGUSDT", "ICXUSDT", "GMXUSDT", "C98USDT", "STORJUSDT", "QIUSDT", "ZKUSDT",
-            "WCTUSDT", "SANDUSDT", "MKRUSDT", "CHUSDT", "ALGOUSDT", "ATOMUSDT", "MBLUSDT", "ENJUSDT", "FLOWUSDT", "PEPEUSDT",
-            "HOTUSDT", "ETCUSDT", "ILVUSDT", "HEIUSDT", "PAXGUSDT", "ZROUSDT", "KSMUSDT", "BCHUSDT", "AVAXUSDT", "DOTUSDT",
-            "HYPERUSDT", "IMXUSDT", "IOSTUSDT", "PENDLEUSDT", "DOGEUSDT", "WOOUSDT", "VELODROMEUSDT", "AGLDUSDT", "ROSEUSDT",
-            "ACEUSDT", "NEARUSDT", "MEUSDT", "DIAUSDT", "PORTOUSDT", "RIFUSDT", "ZILUSDT", "SCRUSDT", "NEOUSDT", "RAYUSDT",
-            "ONDOUSDT", "OPUSDT", "PYRUSDT", "VETUSDT", "THEUSDT", "SFPUSDT", "ENSUSDT", "BTCUSDT", "STXUSDT", "KAVAUSDT",
-            "QTUMUSDT", "SUNUSDT", "BLURUSDT", "SXPUSDT", "CRVUSDT", "LRCUSDT", "XRPUSDT", "WBTCUSDT", "ANKRUSDT", "ACMUSDT",
-            "EIGENUSDT", "QUICKUSDT", "NEXOUSDT", "REZUSDT", "GMTUSDT", "ASTRUSDT", "FORTHUSDT", "ACXUSDT", "ADAUSDT", "CTKUSDT",
-            "RONINUSDT", "RAREUSDT", "XAIUSDT", "SUSHIUSDT", "BANDUSDT", "VANAUSDT", "TUTUSDT", "AWEUSDT", "BNTUSDT", "GALAUSDT",
-            "ONGUSDT", "CITYUSDT", "AEVOUSDT", "ORDIUSDT", "BMTUSDT", "RLCUSDT", "TSTUSDT", "IOTXUSDT", "HBARUSDT", "COMPUSDT",
-            "AXSUSDT", "ORCAUSDT", "KERNELUSDT", "RADUSDT", "XVSUSDT", "USTCUSDT", "CELRUSDT", "MAGICUSDT", "OMNIUSDT", "UMAUSDT",
-            "MANTAUSDT", "AIUSDT", "DGBUSDT", "SNXUSDT", "MANAUSDT", "LAZIOUSDT", "OGUSDT", "RENDERUSDT", "PUNDIXUSDT", "CAKEUSDT",
-            "ICPUSDT", "BNBUSDT", "ARKUSDT", "AAVEUSDT", "SUIUSDT", "IOTAUSDT", "APTUSDT", "LINKUSDT", "STGUSDT", "ZRXUSDT",
-            "ALICEUSDT", "JUVUSDT", "TIAUSDT", "PARTIUSDT", "AXLUSDT", "CFXUSDT", "PSGUSDT", "KNCUSDT", "MTLUSDT", "YFIUSDT",
-            "CTSIUSDT", "TWTUSDT", "LTCUSDT", "AMPUSDT", "PHBUSDT", "GRTUSDT", "ARPAUSDT", "MASKUSDT", "DCRUSDT", "BIGTIMEUSDT",
-            "MAVUSDT", "HOMEUSDT", "XECUSDT", "BEAMXUSDT", "WLDUSDT", "CETUSUSDT", "STRKUSDT", "VTHOUSDT", "LUNCUSDT", "VANRYUSDT",
-            "SOLVUSDT", "INJUSDT", "PEOPLEUSDT", "IDUSDT", "DASHUSDT", "ONTUSDT", "METISUSDT", "ACAUSDT", "ETHFIUSDT", "HAEDALUSDT",
-            "KDAUSDT", "MINAUSDT", "CGPTUSDT", "TRXUSDT", "BIFIUSDT", "SPELLUSDT", "JSTUSDT", "RVNUSDT", "NEIROUSDT", "PERPUSDT",
-            "ARDRUSDT", "COSUSDT", "BNSOLUSDT", "ACTUSDT", "BANANAUSDT", "TUSDT", "1000SATSUSDT", "MEMEUSDT", "GHSTUSDT", "FTTUSDT",
-            "BROCCOLI714USDT", "CHZUSDT", "LAYERUSDT", "TRUMPUSDT", "SOLUSDT", "LUNAUSDT", "OSMOUSDT", "DFUSDT", "TAOUSDT",
-            "FIDAUSDT", "BOMEUSDT", "SUSDT", "KAIAUSDT", "ARKMUSDT", "THETAUSDT", "SHELLUSDT", "GASUSDT", "BERAUSDT", "ARUSDT",
-            "LISTAUSDT", "FORMUSDT", "ALTUSDT", "JASMYUSDT", "WIFUSDT", "NOTUSDT", "NILUSDT", "TONUSDT", "ZENUSDT", "BANANAS31USDT",
-            "OMUSDT", "QNTUSDT", "ENAUSDT", "TURBOUSDT", "SAHARAUSDT", "JOEUSDT", "COTIUSDT", "NXPCUSDT", "PHAUSDT", "IOUSDT",
-            "AUCTIONUSDT", "WUSDT", "SOPHUSDT", "RESOLVUSDT", "LPTUSDT", "LQTYUSDT", "PORTALUSDT", "PYTHUSDT", "CHESSUSDT",
-            "KMNOUSDT", "ANIMEUSDT", "MOVEUSDT", "JUPUSDT", "PNUTUSDT", "JTOUSDT", "1000CHEEMSUSDT", "BBUSDT", "BONKUSDT",
-            "RSRUSDT", "EDUUSDT", "APEUSDT", "ACHUSDT", "LDOUSDT", "SXTUSDT", "SPKUSDT", "SANTOSUSDT", "HUMAUSDT", "NMRUSDT",
-            "STRAXUSDT", "HMSTRUSDT", "HFTUSDT", "1000CATUSDT", "DOGSUSDT", "SEIUSDT", "SIGNUSDT", "COOKIEUSDT", "GPSUSDT",
-            "BABYUSDT", "MUBARAKUSDT", "REDUSDT", "DATAUSDT", "EPICUSDT", "VIRTUALUSDT", "FUNUSDT", "KAITOUSDT", "AIXBTUSDT",
-            "BIOUSDT", "NEWTUSDT", "PROMUSDT", "ALPINEUSDT", "BAKEUSDT", "SYRUPUSDT", "GUNUSDT", "INITUSDT"
-        ];
+        // $symbols = [
+        //     "FISUSDT", "MDTUSDT", "VICUSDT", "REIUSDT", "LOKAUSDT", "PIVXUSDT", "VOXELUSDT", "MBOXUSDT", "COWUSDT", "FIOUSDT",
+        //     "BELUSDT", "NKNUSDT", "1MBABYDOGEUSDT", "ASRUSDT", "ADXUSDT", "GTCUSDT", "SCRTUSDT", "CVCUSDT", "SYSUSDT", "CYBERUSDT",
+        //     "IDEXUSDT", "RPLUSDT", "AUSDT", "HOOKUSDT", "DEGOUSDT", "NTRNUSDT", "CVXUSDT", "ATAUSDT", "CELOUSDT", "DUSDT", "DUSKUSDT",
+        //     "CKBUSDT", "HIFIUSDT", "UNIUSDT", "GLMRUSDT", "LSKUSDT", "SCUSDT", "1INCHUSDT", "PONDUSDT", "GLMUSDT", "SYNUSDT",
+        //     "SUPERUSDT", "QKCUSDT", "BARUSDT", "TNSRUSDT", "UTKUSDT", "MOVRUSDT", "POLUSDT", "SLFUSDT", "FLUXUSDT", "STOUSDT",
+        //     "FETUSDT", "HIVEUSDT", "ALCXUSDT", "FARMUSDT", "ZECUSDT", "GUSDT", "OXTUSDT", "WANUSDT", "BTTCUSDT", "SHIBUSDT",
+        //     "POLYXUSDT", "YGGUSDT", "NFPUSDT", "WAXPUSDT", "ARBUSDT", "FLOKIUSDT", "DODOUSDT", "BICOUSDT", "API3USDT", "ONEUSDT",
+        //     "MLNUSDT", "BATUSDT", "SKLUSDT", "XLMUSDT", "TFUELUSDT", "USUALUSDT", "DENTUSDT", "TLMUSDT", "HIGHUSDT", "STEEMUSDT",
+        //     "SAGAUSDT", "DYDXUSDT", "SLPUSDT", "PIXELUSDT", "DEXEUSDT", "SSVUSDT", "AUDIOUSDT", "XNOUSDT", "XTZUSDT", "WINUSDT",
+        //     "POWRUSDT", "TRBUSDT", "FILUSDT", "IQUSDT", "ETHUSDT", "WBETHUSDT", "RUNEUSDT", "FXSUSDT", "GNSUSDT", "LUMIAUSDT",
+        //     "TKOUSDT", "ATMUSDT", "GNOUSDT", "PENGUUSDT", "DYMUSDT", "REQUSDT", "RDNTUSDT", "TRUUSDT", "OGNUSDT", "AVAUSDT",
+        //     "CATIUSDT", "FLMUSDT", "EGLDUSDT", "XVGUSDT", "ICXUSDT", "GMXUSDT", "C98USDT", "STORJUSDT", "QIUSDT", "ZKUSDT",
+        //     "WCTUSDT", "SANDUSDT", "MKRUSDT", "CHUSDT", "ALGOUSDT", "ATOMUSDT", "MBLUSDT", "ENJUSDT", "FLOWUSDT", "PEPEUSDT",
+        //     "HOTUSDT", "ETCUSDT", "ILVUSDT", "HEIUSDT", "PAXGUSDT", "ZROUSDT", "KSMUSDT", "BCHUSDT", "AVAXUSDT", "DOTUSDT",
+        //     "HYPERUSDT", "IMXUSDT", "IOSTUSDT", "PENDLEUSDT", "DOGEUSDT", "WOOUSDT", "VELODROMEUSDT", "AGLDUSDT", "ROSEUSDT",
+        //     "ACEUSDT", "NEARUSDT", "MEUSDT", "DIAUSDT", "PORTOUSDT", "RIFUSDT", "ZILUSDT", "SCRUSDT", "NEOUSDT", "RAYUSDT",
+        //     "ONDOUSDT", "OPUSDT", "PYRUSDT", "VETUSDT", "THEUSDT", "SFPUSDT", "ENSUSDT", "BTCUSDT", "STXUSDT", "KAVAUSDT",
+        //     "QTUMUSDT", "SUNUSDT", "BLURUSDT", "SXPUSDT", "CRVUSDT", "LRCUSDT", "XRPUSDT", "WBTCUSDT", "ANKRUSDT", "ACMUSDT",
+        //     "EIGENUSDT", "QUICKUSDT", "NEXOUSDT", "REZUSDT", "GMTUSDT", "ASTRUSDT", "FORTHUSDT", "ACXUSDT", "ADAUSDT", "CTKUSDT",
+        //     "RONINUSDT", "RAREUSDT", "XAIUSDT", "SUSHIUSDT", "BANDUSDT", "VANAUSDT", "TUTUSDT", "AWEUSDT", "BNTUSDT", "GALAUSDT",
+        //     "ONGUSDT", "CITYUSDT", "AEVOUSDT", "ORDIUSDT", "BMTUSDT", "RLCUSDT", "TSTUSDT", "IOTXUSDT", "HBARUSDT", "COMPUSDT",
+        //     "AXSUSDT", "ORCAUSDT", "KERNELUSDT", "RADUSDT", "XVSUSDT", "USTCUSDT", "CELRUSDT", "MAGICUSDT", "OMNIUSDT", "UMAUSDT",
+        //     "MANTAUSDT", "AIUSDT", "DGBUSDT", "SNXUSDT", "MANAUSDT", "LAZIOUSDT", "OGUSDT", "RENDERUSDT", "PUNDIXUSDT", "CAKEUSDT",
+        //     "ICPUSDT", "BNBUSDT", "ARKUSDT", "AAVEUSDT", "SUIUSDT", "IOTAUSDT", "APTUSDT", "LINKUSDT", "STGUSDT", "ZRXUSDT",
+        //     "ALICEUSDT", "JUVUSDT", "TIAUSDT", "PARTIUSDT", "AXLUSDT", "CFXUSDT", "PSGUSDT", "KNCUSDT", "MTLUSDT", "YFIUSDT",
+        //     "CTSIUSDT", "TWTUSDT", "LTCUSDT", "AMPUSDT", "PHBUSDT", "GRTUSDT", "ARPAUSDT", "MASKUSDT", "DCRUSDT", "BIGTIMEUSDT",
+        //     "MAVUSDT", "HOMEUSDT", "XECUSDT", "BEAMXUSDT", "WLDUSDT", "CETUSUSDT", "STRKUSDT", "VTHOUSDT", "LUNCUSDT", "VANRYUSDT",
+        //     "SOLVUSDT", "INJUSDT", "PEOPLEUSDT", "IDUSDT", "DASHUSDT", "ONTUSDT", "METISUSDT", "ACAUSDT", "ETHFIUSDT", "HAEDALUSDT",
+        //     "KDAUSDT", "MINAUSDT", "CGPTUSDT", "TRXUSDT", "BIFIUSDT", "SPELLUSDT", "JSTUSDT", "RVNUSDT", "NEIROUSDT", "PERPUSDT",
+        //     "ARDRUSDT", "COSUSDT", "BNSOLUSDT", "ACTUSDT", "BANANAUSDT", "TUSDT", "1000SATSUSDT", "MEMEUSDT", "GHSTUSDT", "FTTUSDT",
+        //     "BROCCOLI714USDT", "CHZUSDT", "LAYERUSDT", "TRUMPUSDT", "SOLUSDT", "LUNAUSDT", "OSMOUSDT", "DFUSDT", "TAOUSDT",
+        //     "FIDAUSDT", "BOMEUSDT", "SUSDT", "KAIAUSDT", "ARKMUSDT", "THETAUSDT", "SHELLUSDT", "GASUSDT", "BERAUSDT", "ARUSDT",
+        //     "LISTAUSDT", "FORMUSDT", "ALTUSDT", "JASMYUSDT", "WIFUSDT", "NOTUSDT", "NILUSDT", "TONUSDT", "ZENUSDT", "BANANAS31USDT",
+        //     "OMUSDT", "QNTUSDT", "ENAUSDT", "TURBOUSDT", "SAHARAUSDT", "JOEUSDT", "COTIUSDT", "NXPCUSDT", "PHAUSDT", "IOUSDT",
+        //     "AUCTIONUSDT", "WUSDT", "SOPHUSDT", "RESOLVUSDT", "LPTUSDT", "LQTYUSDT", "PORTALUSDT", "PYTHUSDT", "CHESSUSDT",
+        //     "KMNOUSDT", "ANIMEUSDT", "MOVEUSDT", "JUPUSDT", "PNUTUSDT", "JTOUSDT", "1000CHEEMSUSDT", "BBUSDT", "BONKUSDT",
+        //     "RSRUSDT", "EDUUSDT", "APEUSDT", "ACHUSDT", "LDOUSDT", "SXTUSDT", "SPKUSDT", "SANTOSUSDT", "HUMAUSDT", "NMRUSDT",
+        //     "STRAXUSDT", "HMSTRUSDT", "HFTUSDT", "1000CATUSDT", "DOGSUSDT", "SEIUSDT", "SIGNUSDT", "COOKIEUSDT", "GPSUSDT",
+        //     "BABYUSDT", "MUBARAKUSDT", "REDUSDT", "DATAUSDT", "EPICUSDT", "VIRTUALUSDT", "FUNUSDT", "KAITOUSDT", "AIXBTUSDT",
+        //     "BIOUSDT", "NEWTUSDT", "PROMUSDT", "ALPINEUSDT", "BAKEUSDT", "SYRUPUSDT", "GUNUSDT", "INITUSDT"
+        // ];
 
-        $coins = [
-            "FIS", "MDT", "VIC", "REI", "LOKA", "PIVX", "VOXEL", "MBOX", "COW", "FIO", "BEL", "NKN", "1MBABYDOGE", "ASR",
-            "ADX", "GTC", "SCRT", "CVC", "SYS", "CYBER", "IDEX", "RPL", "A", "HOOK", "DEGO", "NTRN", "CVX", "ATA", "CELO",
-            "D", "DUSK", "CKB", "HIFI", "UNI", "GLMR", "LSK", "SC", "1INCH", "POND", "GLM", "SYN", "SUPER", "QKC", "BAR",
-            "TNSR", "UTK", "MOVR", "POL", "SLF", "FLUX", "STO", "FET", "HIVE", "ALCX", "FARM", "ZEC", "G", "OXT", "WAN",
-            "BTTC", "SHIB", "POLYX", "YGG", "NFP", "WAXP", "ARB", "FLOKI", "DODO", "BICO", "API3", "ONE", "MLN", "BAT",
-            "SKL", "XLM", "TFUEL", "USUAL", "DENT", "TLM", "HIGH", "STEEM", "SAGA", "DYDX", "SLP", "PIXEL", "DEXE", "SSV",
-            "AUDIO", "XNO", "XTZ", "WIN", "POWR", "TRB", "FIL", "IQ", "ETH", "WBETH", "RUNE", "FXS", "GNS", "LUMIA", "TKO",
-            "ATM", "GNO", "PENGU", "DYM", "REQ", "RDNT", "TRU", "OGN", "AVA", "CATI", "FLM", "EGLD", "XVG", "ICX", "GMX",
-            "C98", "STORJ", "QI", "ZK", "WCT", "SAND", "MKR", "CHR", "ALGO", "ATOM", "MBL", "ENJ", "FLOW", "PEPE", "HOT",
-            "ETC", "ILV", "HEI", "PAXG", "ZRO", "KSM", "BCH", "AVAX", "DOT", "HYPER", "IMX", "IOST", "PENDLE", "DOGE", "WOO",
-            "VELODROME", "AGLD", "ROSE", "ACE", "NEAR", "ME", "DIA", "PORTO", "RIF", "ZIL", "SCR", "NEO", "RAY", "ONDO",
-            "OP", "PYR", "VET", "THE", "SFP", "ENS", "BTC", "STX", "KAVA", "QTUM", "SUN", "BLUR", "SXP", "CRV", "LRC", "XRP",
-            "WBTC", "ANKR", "ACM", "EIGEN", "QUICK", "NEXO", "REZ", "GMT", "ASTR", "FORTH", "ACX", "ADA", "CTK", "RONIN",
-            "RARE", "XAI", "SUSHI", "BAND", "VANA", "TUT", "AWE", "BNT", "GALA", "ONG", "CITY", "AEVO", "ORDI", "BMT", "RLC",
-            "TST", "IOTX", "HBAR", "COMP", "AXS", "ORCA", "KERNEL", "RAD", "XVS", "USTC", "CELR", "MAGIC", "OMNI", "UMA",
-            "MANTA", "AI", "DGB", "SNX", "MANA", "LAZIO", "OG", "RENDER", "PUNDIX", "CAKE", "ICP", "BNB", "ARK", "AAVE",
-            "SUI", "IOTA", "APT", "LINK", "STG", "ZRX", "ALICE", "JUV", "TIA", "PARTI", "AXL", "CFX", "PSG", "KNC", "MTL",
-            "YFI", "CTSI", "TWT", "LTC", "AMP", "PHB", "GRT", "ARPA", "MASK", "DCR", "BIGTIME", "MAV", "HOME", "XEC", "BEAMX",
-            "WLD", "CETUS", "STRK", "VTHO", "LUNC", "VANRY", "SOLV", "INJ", "PEOPLE", "ID", "DASH", "ONT", "METIS", "ACA",
-            "ETHFI", "HAEDAL", "KDA", "MINA", "CGPT", "TRX", "BIFI", "SPELL", "JST", "RVN", "NEIRO", "PERP", "ARDR", "COS",
-            "BNSOL", "ACT", "BANANA", "T", "1000SATS", "MEME", "GHST", "FTT", "BROCCOLI714", "CHZ", "LAYER", "TRUMP", "SOL",
-            "LUNA", "OSMO", "DF", "TAO", "FIDA", "BOME", "S", "KAIA", "ARKM", "THETA", "SHELL", "GAS", "BERA", "AR", "LISTA",
-            "FORM", "ALT", "JASMY", "WIF", "NOT", "NIL", "TON", "ZEN", "BANANAS31", "OM", "QNT", "ENA", "TURBO", "SAHARA",
-            "JOE", "COTI", "NXPC", "PHA", "IO", "AUCTION", "W", "SOPH", "RESOLV", "LPT", "LQTY", "PORTAL", "PYTH", "CHESS",
-            "KMNO", "ANIME", "MOVE", "JUP", "PNUT", "JTO", "1000CHEEMS", "BB", "BONK", "RSR", "EDU", "APE", "ACH", "LDO",
-            "SXT", "SPK", "SANTOS", "HUMA", "NMR", "STRAX", "HMSTR", "HFT", "1000CAT", "DOGS", "SEI", "SIGN", "COOKIE", "GPS",
-            "BABY", "MUBARAK", "RED", "DATA", "EPIC", "VIRTUAL", "FUN", "KAITO", "AIXBT", "BIO", "NEWT", "PROM", "ALPINE",
-            "BAKE", "SYRUP", "GUN", "INIT"
-        ];
+        // $coins = [
+        //     "FIS", "MDT", "VIC", "REI", "LOKA", "PIVX", "VOXEL", "MBOX", "COW", "FIO", "BEL", "NKN", "1MBABYDOGE", "ASR",
+        //     "ADX", "GTC", "SCRT", "CVC", "SYS", "CYBER", "IDEX", "RPL", "A", "HOOK", "DEGO", "NTRN", "CVX", "ATA", "CELO",
+        //     "D", "DUSK", "CKB", "HIFI", "UNI", "GLMR", "LSK", "SC", "1INCH", "POND", "GLM", "SYN", "SUPER", "QKC", "BAR",
+        //     "TNSR", "UTK", "MOVR", "POL", "SLF", "FLUX", "STO", "FET", "HIVE", "ALCX", "FARM", "ZEC", "G", "OXT", "WAN",
+        //     "BTTC", "SHIB", "POLYX", "YGG", "NFP", "WAXP", "ARB", "FLOKI", "DODO", "BICO", "API3", "ONE", "MLN", "BAT",
+        //     "SKL", "XLM", "TFUEL", "USUAL", "DENT", "TLM", "HIGH", "STEEM", "SAGA", "DYDX", "SLP", "PIXEL", "DEXE", "SSV",
+        //     "AUDIO", "XNO", "XTZ", "WIN", "POWR", "TRB", "FIL", "IQ", "ETH", "WBETH", "RUNE", "FXS", "GNS", "LUMIA", "TKO",
+        //     "ATM", "GNO", "PENGU", "DYM", "REQ", "RDNT", "TRU", "OGN", "AVA", "CATI", "FLM", "EGLD", "XVG", "ICX", "GMX",
+        //     "C98", "STORJ", "QI", "ZK", "WCT", "SAND", "MKR", "CHR", "ALGO", "ATOM", "MBL", "ENJ", "FLOW", "PEPE", "HOT",
+        //     "ETC", "ILV", "HEI", "PAXG", "ZRO", "KSM", "BCH", "AVAX", "DOT", "HYPER", "IMX", "IOST", "PENDLE", "DOGE", "WOO",
+        //     "VELODROME", "AGLD", "ROSE", "ACE", "NEAR", "ME", "DIA", "PORTO", "RIF", "ZIL", "SCR", "NEO", "RAY", "ONDO",
+        //     "OP", "PYR", "VET", "THE", "SFP", "ENS", "BTC", "STX", "KAVA", "QTUM", "SUN", "BLUR", "SXP", "CRV", "LRC", "XRP",
+        //     "WBTC", "ANKR", "ACM", "EIGEN", "QUICK", "NEXO", "REZ", "GMT", "ASTR", "FORTH", "ACX", "ADA", "CTK", "RONIN",
+        //     "RARE", "XAI", "SUSHI", "BAND", "VANA", "TUT", "AWE", "BNT", "GALA", "ONG", "CITY", "AEVO", "ORDI", "BMT", "RLC",
+        //     "TST", "IOTX", "HBAR", "COMP", "AXS", "ORCA", "KERNEL", "RAD", "XVS", "USTC", "CELR", "MAGIC", "OMNI", "UMA",
+        //     "MANTA", "AI", "DGB", "SNX", "MANA", "LAZIO", "OG", "RENDER", "PUNDIX", "CAKE", "ICP", "BNB", "ARK", "AAVE",
+        //     "SUI", "IOTA", "APT", "LINK", "STG", "ZRX", "ALICE", "JUV", "TIA", "PARTI", "AXL", "CFX", "PSG", "KNC", "MTL",
+        //     "YFI", "CTSI", "TWT", "LTC", "AMP", "PHB", "GRT", "ARPA", "MASK", "DCR", "BIGTIME", "MAV", "HOME", "XEC", "BEAMX",
+        //     "WLD", "CETUS", "STRK", "VTHO", "LUNC", "VANRY", "SOLV", "INJ", "PEOPLE", "ID", "DASH", "ONT", "METIS", "ACA",
+        //     "ETHFI", "HAEDAL", "KDA", "MINA", "CGPT", "TRX", "BIFI", "SPELL", "JST", "RVN", "NEIRO", "PERP", "ARDR", "COS",
+        //     "BNSOL", "ACT", "BANANA", "T", "1000SATS", "MEME", "GHST", "FTT", "BROCCOLI714", "CHZ", "LAYER", "TRUMP", "SOL",
+        //     "LUNA", "OSMO", "DF", "TAO", "FIDA", "BOME", "S", "KAIA", "ARKM", "THETA", "SHELL", "GAS", "BERA", "AR", "LISTA",
+        //     "FORM", "ALT", "JASMY", "WIF", "NOT", "NIL", "TON", "ZEN", "BANANAS31", "OM", "QNT", "ENA", "TURBO", "SAHARA",
+        //     "JOE", "COTI", "NXPC", "PHA", "IO", "AUCTION", "W", "SOPH", "RESOLV", "LPT", "LQTY", "PORTAL", "PYTH", "CHESS",
+        //     "KMNO", "ANIME", "MOVE", "JUP", "PNUT", "JTO", "1000CHEEMS", "BB", "BONK", "RSR", "EDU", "APE", "ACH", "LDO",
+        //     "SXT", "SPK", "SANTOS", "HUMA", "NMR", "STRAX", "HMSTR", "HFT", "1000CAT", "DOGS", "SEI", "SIGN", "COOKIE", "GPS",
+        //     "BABY", "MUBARAK", "RED", "DATA", "EPIC", "VIRTUAL", "FUN", "KAITO", "AIXBT", "BIO", "NEWT", "PROM", "ALPINE",
+        //     "BAKE", "SYRUP", "GUN", "INIT"
+        // ];
 
-        $this->checkBullishEngulfings();
-        $this->checkBTCDominanceEngulf();
+        // $this->checkBullishEngulfings();
+        // $this->checkBTCDominanceEngulf();
 
 
         // $interval = "15m";
@@ -145,6 +145,50 @@ class FetchBinanceCandles extends Command
 
 
         // $this->info("🎯 Finished scanning all symbols.");
+        $coins = ["ICP", "DOT", "NEAR", "ORDI", "INJ", "NEIRO", "SOL", "XRP", "ADA"];
+        $btcSymbol = "BTCUSDT";
+        $dominanceSymbol = "BTCUSDT_DOM";
+        $interval = "15m";
+        $runIntervalSeconds = 20;
+
+        // ---------------- STATE TRACKING ----------------
+        $lastEngulfTimes = []; // Last engulf timestamp per coin
+        $engulfCount = [];     // Engulf counter per coin
+
+        foreach ($coins as $coin) {
+            $symbol = $coin . "USDT";
+            $klines = $this->getKlines($symbol, $interval);
+            if (count($klines) < 2) continue;
+
+            $prev = $klines[count($klines) - 2];
+            $curr = $klines[count($klines) - 1];
+            $isClosed = $curr[6] < time() * 1000;
+
+            $engulfDetected = false;
+
+            if ($this->isBullishEngulf($prev, $curr)) {
+                if (!$this->isVolumeSpike($klines)) continue;
+                if (!$this->isBTCBullishInfluence()) continue;
+                if (!$this->isBTCDominanceBearishEngulf()) continue;
+
+                $now = time();
+
+                // 3-hour gap logic
+                if (!isset($lastEngulfTimes[$coin]) || $now - $lastEngulfTimes[$coin] >= 10800) {
+                    if ($isClosed) {
+                        $lastEngulfTimes[$coin] = $now;
+                        $engulfCount[$coin] = 1; // Reset count
+                        info("[$coin] 1st Engulf detected after 3-hour gap (Closed Candle)\n");
+                    }
+                } else {
+                    // Increment count
+                    $engulfCount[$coin] = ($engulfCount[$coin] ?? 1) + 1;
+                    info("[$coin] Engulf #{$engulfCount[$coin]} detected (Live or Closed Candle)\n");
+                }
+            }
+        }
+
+
     }
 
     public function getAllSpotSymbols() {
@@ -225,9 +269,21 @@ class FetchBinanceCandles extends Command
     }
 
     function getKlines($symbol, $interval = "15m", $limit = 10) {
-        $url = "https://api.binance.com/api/v3/klines?symbol={$symbol}&interval={$interval}&limit={$limit}";
-        $response = @file_get_contents($url);
-        return $response ? json_decode($response, true) : [];
+        $url = "https://fapi.binance.com/fapi/v1/klines?symbol=$symbol&interval=$interval&limit=30";
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($ch);
+        if (curl_errno($ch)) {
+            info("cURL Error: " . curl_error($ch) . "\n");
+            return [];
+        }
+        curl_close($ch);
+        $data = json_decode($response, true);
+        if (!is_array($data)) {
+            info("Invalid JSON or Binance API response for $symbol\n");
+            return [];
+        }
+        return $data;
     }
 
 
@@ -329,13 +385,72 @@ class FetchBinanceCandles extends Command
     //     }
     // }
 
+    public function isBullishEngulf($prev, $curr)
+    {
+        $prevOpen = floatval($prev[1]);
+        $prevClose = floatval($prev[4]);
+        $currOpen = floatval($curr[1]);
+        $currClose = floatval($curr[4]);
+
+        if ($prevClose >= $prevOpen || $currClose <= $currOpen) return false;
+
+        $prevBody = abs($prevClose - $prevOpen);
+        $currBody = abs($currClose - $currOpen);
+        if ($currBody < 1.2 * $prevBody) return false;
+
+        return $currOpen < $prevClose && $currClose > $prevOpen;
+    }
+
+    public function isBearishEngulf($prev, $curr)
+    {
+        $prevOpen = floatval($prev[1]);
+        $prevClose = floatval($prev[4]);
+        $currOpen = floatval($curr[1]);
+        $currClose = floatval($curr[4]);
+
+        if ($prevClose <= $prevOpen || $currClose >= $currOpen) return false;
+
+        $prevBody = abs($prevClose - $prevOpen);
+        $currBody = abs($currClose - $currOpen);
+        if ($currBody < 1.2 * $prevBody) return false;
+
+        return $currOpen > $prevClose && $currClose < $prevOpen;
+    }
+
+    public function isVolumeSpike($klines)
+    {
+        $volumes = array_map(fn($k) => floatval($k[5]), array_slice($klines, -6, 5));
+        $avgVolume = array_sum($volumes) / count($volumes);
+        $currentVolume = floatval(end($klines)[5]);
+        return $currentVolume > 1.5 * $avgVolume;
+    }
+
+    public function isBTCBullishInfluence()
+    {
+        $klines = $this->getKlines("BTCUSDT", "15m");
+        if (count($klines) < 2) return false;
+        return $this->isBullishEngulf($klines[count($klines) - 2], $klines[count($klines) - 1]);
+    }
+
+    public function isBTCDominanceBearishEngulf()
+    {
+        $klines = $this->getKlines("BTCUSDT_DOM", "15m");
+        if (count($klines) < 2) return false;
+        return $this->isBearishEngulf($klines[count($klines) - 2], $klines[count($klines) - 1]);
+    }
+
+
+
+
+
+
     public function checkBullishEngulfings()
     {
         $symbols = $this->getTopLosers($this->getAllSpotSymbols());
         // dd($symbols);
         foreach ($symbols as $symbol) {
             $candles = $this->getKlines($symbol);
-            info('candels', [$candles]);
+            // info('candels', [$candles]);
             if (count($candles) < 2) {
                 continue;
             }
