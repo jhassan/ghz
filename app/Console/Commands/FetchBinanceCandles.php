@@ -147,49 +147,122 @@ class FetchBinanceCandles extends Command
         // $this->info("🎯 Finished scanning all symbols.");
         $coins = ["ICP", "DOT", "NEAR", "ORDI", "INJ", "NEIRO", "SOL", "XRP", "ADA"];
         $btcSymbol = "BTCUSDT";
-        $dominanceSymbol = "BTCUSDT_DOM";
+        $dominanceSymbol = "BTCDOMUSDT"; // ✅ Confirmed Futures symbol on Binance
         $interval = "15m";
         $runIntervalSeconds = 20;
 
         // ---------------- STATE TRACKING ----------------
-        $lastEngulfTimes = []; // Last engulf timestamp per coin
-        $engulfCount = [];     // Engulf counter per coin
+        $lastEngulfTimes = [];
+        $engulfCounts = [];
 
-        foreach ($coins as $coin) {
-            $symbol = $coin . "USDT";
-            $klines = $this->getKlines($symbol, $interval);
-            if (count($klines) < 2) continue;
+        // ---------------- MAIN LOOP ----------------
+        while (true) {
+            foreach ($coins as $coin) {
+                $symbol = $coin . "USDT";
+                $data = $this->fetchCandles($symbol, $interval);
+                if (!$data) continue;
 
-            $prev = $klines[count($klines) - 2];
-            $curr = $klines[count($klines) - 1];
-            $isClosed = $curr[6] < time() * 1000;
+                $lastCandle = end($data);
+                $secondLastCandle = $data[count($data) - 2];
 
-            $engulfDetected = false;
+                $isBullish = $this->isBullishEngulfing($secondLastCandle, $lastCandle);
 
-            if ($this->isBullishEngulf($prev, $curr)) {
-                if (!$this->isVolumeSpike($klines)) continue;
-                if (!$this->isBTCBullishInfluence()) continue;
-                if (!$this->isBTCDominanceBearishEngulf()) continue;
-
-                $now = time();
-
-                // 3-hour gap logic
-                if (!isset($lastEngulfTimes[$coin]) || $now - $lastEngulfTimes[$coin] >= 10800) {
-                    if ($isClosed) {
-                        $lastEngulfTimes[$coin] = $now;
-                        $engulfCount[$coin] = 1; // Reset count
-                        info("[$coin] 1st Engulf detected after 3-hour gap (Closed Candle)\n");
+                if ($isBullish) {
+                    if (!isset($engulfCounts[$coin]) || $this->shouldReset($lastEngulfTimes[$coin])) {
+                        // ✅ First engulf → wait for closed candle only
+                        if ($lastCandle[6] < time() * 1000) {
+                            $engulfCounts[$coin] = 1;
+                            $lastEngulfTimes[$coin] = time();
+                            echo "✅ $coin - Bullish Engulf detected! (1st)\n";
+                        }
+                    } else {
+                        $engulfCounts[$coin]++;
+                        $lastEngulfTimes[$coin] = time();
+                        echo "✅ $coin - Bullish Engulf detected! ({$engulfCounts[$coin]}th)\n";
                     }
-                } else {
-                    // Increment count
-                    $engulfCount[$coin] = ($engulfCount[$coin] ?? 1) + 1;
-                    info("[$coin] Engulf #{$engulfCount[$coin]} detected (Live or Closed Candle)\n");
                 }
             }
+
+            // ✅ Bearish engulf check only for BTC Dominance
+            $btcDomData = $this->fetchCandles($dominanceSymbol, $interval);
+            if ($btcDomData) {
+                $last = end($btcDomData);
+                $secondLast = $btcDomData[count($btcDomData) - 2];
+
+                $isBearish = $this->isBearishEngulfing($secondLast, $last);
+
+                if ($isBearish) {
+                    if (!isset($engulfCounts[$dominanceSymbol]) || $this->shouldReset($lastEngulfTimes[$dominanceSymbol])) {
+                        if ($last[6] < time() * 1000) {
+                            $engulfCounts[$dominanceSymbol] = 1;
+                            $lastEngulfTimes[$dominanceSymbol] = time();
+                            echo "⚠ $dominanceSymbol - Bearish Engulf detected! (1st)\n";
+                        }
+                    } else {
+                        $engulfCounts[$dominanceSymbol]++;
+                        $lastEngulfTimes[$dominanceSymbol] = time();
+                        echo "⚠ $dominanceSymbol - Bearish Engulf detected! ({$engulfCounts[$dominanceSymbol]}th)\n";
+                    }
+                }
+            }
+
+            sleep($runIntervalSeconds);
         }
 
-
     }
+
+    public function fetchCandles($symbol, $interval, $limit = 30) {
+        $url = "https://fapi.binance.com/fapi/v1/klines?symbol=$symbol&interval=$interval&limit=$limit";
+        $response = @file_get_contents($url);
+        if (!$response) return null;
+        $data = json_decode($response, true);
+        return $data ?: null;
+    }
+
+    // ---------------- ENGULF CHECK ----------------
+    public function isBullishEngulfing($prev, $curr) {
+        $prevOpen = floatval($prev[1]);
+        $prevClose = floatval($prev[4]);
+        $currOpen = floatval($curr[1]);
+        $currClose = floatval($curr[4]);
+
+        $prevBody = abs($prevClose - $prevOpen);
+        $currBody = abs($currClose - $currOpen);
+
+        // ✅ Custom Rule: both candles must start from same price (strict rule)
+        if ($prevOpen != $currOpen) return false;
+
+        // ✅ Previous candle body must be at least 20% of current candle body
+        if ($prevBody < ($currBody * 0.2)) return false;
+
+        return ($prevClose < $prevOpen) && ($currClose > $currOpen) && ($currClose > $prevOpen);
+    }
+
+    public function isBearishEngulfing($prev, $curr) {
+        $prevOpen = floatval($prev[1]);
+        $prevClose = floatval($prev[4]);
+        $currOpen = floatval($curr[1]);
+        $currClose = floatval($curr[4]);
+
+        $prevBody = abs($prevClose - $prevOpen);
+        $currBody = abs($currClose - $currOpen);
+
+        // ✅ Custom Rule: both candles must start from same price
+        if ($prevOpen != $currOpen) return false;
+
+        // ✅ Previous candle body must be at least 20% of current candle body
+        if ($prevBody < ($currBody * 0.2)) return false;
+
+        return ($prevClose > $prevOpen) && ($currClose < $currOpen) && ($currClose < $prevOpen);
+    }
+
+    // ---------------- RESET IF 3 HOURS PASSED ----------------
+    public function shouldReset($lastTime) {
+        return (time() - $lastTime) > 10800; // 3 hours in seconds
+    }
+
+
+
 
     public function getAllSpotSymbols() {
         // $exchangeInfo = json_decode(file_get_contents("https://api.binance.com/api/v3/exchangeInfo"), true);
@@ -253,19 +326,6 @@ class FetchBinanceCandles extends Command
         }
         asort($losers);
         return array_slice(array_keys($losers), 0, 30);
-    }
-
-    public function isBullishEngulfing($prev, $curr) {
-        $prevOpen = floatval($prev[1]);
-        $prevClose = floatval($prev[4]);
-        $currOpen = floatval($curr[1]);
-        $currClose = floatval($curr[4]);
-
-        $prevBody = abs($prevClose - $prevOpen);
-        if ($prevClose > $prevOpen && $currClose > $currOpen && $currOpen < $prevClose && $currClose > $prevOpen && $prevBody >= 0.25 * abs($currClose - $currOpen)) {
-            return true;
-        }
-        return false;
     }
 
     function getKlines($symbol, $interval = "15m", $limit = 10) {
