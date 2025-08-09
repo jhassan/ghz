@@ -8,8 +8,8 @@ class CandleController extends Controller
 {
     public function index(Request $request)
     {
-        $symbols = EngulfAlert::distinct()->pluck('symbol');
-        $query = EngulfAlert::query();
+        $symbols = Candle::distinct()->pluck('symbol');
+        $query = Candle::query();
 
         if ($request->filled('symbol')) {
             $query->where('symbol', $request->symbol);
