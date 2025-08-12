@@ -2,7 +2,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\EngulfAlert;
+use App\Models\Candle;
 
 class CandleController extends Controller
 {
@@ -15,7 +15,7 @@ class CandleController extends Controller
             $query->where('symbol', $request->symbol);
         }
 
-        $candles = $query->orderBy('detected_at', 'desc')->paginate(50);
+        $candles = $query->orderBy('open_time', 'desc')->paginate(50);
 
         return view('candles.index', compact('candles', 'symbols'));
     }

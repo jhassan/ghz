@@ -16,57 +16,74 @@ class FetchBinanceCandles extends Command
     {
 
           // 🔁 Hardcoded list of coin pairs
-        $symbols = [
-            "ICP", "DOT", "NEAR", "ORDI", "INJ", "NEIRO", "SOL", "XRP", "ADA"
-        ];
-        $interval = "15m";
-        $max_gap_minutes = 180; // 3 hours
-        $engulf_list = [];
+             // ---------------- CONFIG ----------------
+        $coins = ["BTC", "ICP", "DOT", "NEAR", "ORDI", "INJ", "NEIRO", "SOL", "OP", "XRP", "ADA"];
+        $interval = '15m';
+        $limit = 3; // ✅ Changed from 73 to 3
+        // ----------------------------------------
 
-        foreach ($symbols as $coin) {
-            $candles = $this->fetchCandle($coin, $interval);
-            dd($candles);
-            if (!$candles || count($candles) < 2) continue;
+        foreach ($coins as $c) {
+            $symbol = $c . 'USDT';
+            $this->info("\n🔎 Checking: $symbol");
 
-            $prev = $candles[0];
-            $curr = $candles[1];
+            // Fetch klines
+            $response = Http::get('https://api.binance.com/api/v3/klines', [
+                'symbol' => $symbol,
+                'interval' => $interval,
+                'limit' => $limit,
+            ]);
 
-            if ($this->isEngulfing($prev, $curr)) {
-                $now = time();
-                $engulf_key = $coin;
-
-                if (!isset($engulf_list[$engulf_key])) {
-                    // First engulf — wait for 15min close (mocked with current close time)
-                    $closeTime = intval($curr[6] / 1000);
-                    if ($now >= $closeTime) {
-                        $engulf_list[$engulf_key] = ["last" => $now, "count" => 2];
-                        $influence = $this->detectInfluence($coin);
-                        echo "$coin | Engulf #2 | $influence\n";
-                    } else {
-                        // Do not notify yet — waiting for 15m close
-                        continue;
-                    }
-                } else {
-                    $lastTime = $engulf_list[$engulf_key]["last"];
-                    $diff = ($now - $lastTime) / 60;
-                    if ($diff <= $max_gap_minutes) {
-                        $engulf_list[$engulf_key]["count"]++;
-                        $engulf_list[$engulf_key]["last"] = $now;
-                        $engulfNo = $engulf_list[$engulf_key]["count"];
-                        $influence = detectInfluence($coin);
-                        echo "$coin | Engulf #$engulfNo | $influence\n";
-                    } else {
-                        // Reset on 3hr gap
-                        $engulf_list[$engulf_key] = ["last" => $now, "count" => 2];
-                        $influence = detectInfluence($coin);
-                        echo "$coin | Engulf #2 | $influence\n";
-                    }
-                }
+            if (! $response->ok()) {
+                $this->error("❌ Failed to fetch candles for $symbol — HTTP " . $response->status());
+                continue;
             }
-            // Else: no valid engulf
+
+            $candles = $response->json();
+
+            for ($index = 1; $index < count($candles); $index++) {
+                $prev = $candles[$index - 1];
+                $current = $candles[$index];
+
+                $prevOpen = (float) $prev[1];
+                $prevClose = (float) $prev[4];
+                $currOpen = (float) $current[1];
+                $currClose = (float) $current[4];
+
+                $tolerance = 0.000001;
+
+                $isEngulfing = (
+                    $prevOpen > $prevClose &&
+                    $currClose > $currOpen &&
+                    abs($prevClose - $currOpen) < $tolerance &&
+                    $currClose > $prevOpen
+                );
+
+                if (! $isEngulfing) continue;
+
+                $openTime = Carbon::createFromTimestampMs($current[0])->setTimezone('Asia/Karachi');
+
+                if (Candle::where('symbol', $symbol)->where('open_time', $openTime)->exists()) {
+                    $this->info("⏭ Already recorded: $symbol at $openTime");
+                    continue;
+                }
+
+                Candle::create([
+                    'symbol' => $symbol,
+                    'interval' => $interval,
+                    'open_time' => $openTime,
+                    'open' => $currOpen,
+                    'high' => (float) $current[2],
+                    'low' => (float) $current[3],
+                    'close' => $currClose,
+                    'is_bullish_engulfing' => true,
+                ]);
+
+                $this->info("✅ Engulfing FOUND — $symbol | OpenTime: $openTime | O: $currOpen C: $currClose");
+            }
         }
 
-
+        $this->info("\n🎯 Scan complete — checked " . count($coins) . " coins.");
+        // return 0;
         $this->info("🎯 Finished scanning all symbols.");
     }
 
