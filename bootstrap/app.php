@@ -16,6 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withSchedule(function (Schedule $schedule) {
         $schedule->command('binance:fetch')->everyTenSeconds();
+        // $schedule->command('crypto:send-email')->everyFifteenMinutes();
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

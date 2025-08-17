@@ -18,6 +18,7 @@ class FetchBinanceCandles extends Command
           // 🔁 Hardcoded list of coin pairs
              // ---------------- CONFIG ----------------
         $coins = ["BTC", "ICP", "DOT", "NEAR", "ORDI", "INJ", "NEIRO", "SOL", "OP", "XRP", "ADA"];
+        // $coins = ["BTCUSDT", "ICPUSDT", "DOTUSDT", "NEARUSDT", "ORDIUSDT", "INJUSDT", "NEIROUSDT", "SOLUSDT", "OPUSDT", "XRPUSDT", "ADAUSDT"];
         $interval = '15m';
         $limit = 3; // ✅ Changed from 73 to 3
         // ----------------------------------------
@@ -49,13 +50,19 @@ class FetchBinanceCandles extends Command
                 $currOpen = (float) $current[1];
                 $currClose = (float) $current[4];
 
-                $tolerance = 0.000001;
+                // $tolerance = 0.000001;
 
+                // $isEngulfing = (
+                //     $prevOpen > $prevClose &&
+                //     $currClose > $currOpen &&
+                //     abs($prevClose - $currOpen) < $tolerance &&
+                //     $currClose > $prevOpen
+                // );
                 $isEngulfing = (
-                    $prevOpen > $prevClose &&
-                    $currClose > $currOpen &&
-                    abs($prevClose - $currOpen) < $tolerance &&
-                    $currClose > $prevOpen
+                    $prevOpen > $prevClose &&   // پچھلی bearish
+                    $currClose > $currOpen &&   // موجودہ bullish
+                    $currOpen <= $prevClose &&  // موجودہ open پچھلی close سے کم یا برابر
+                    $currClose > $prevOpen      // موجودہ close پچھلی open سے اوپر
                 );
 
                 if (! $isEngulfing) continue;
