@@ -15,10 +15,8 @@ class FetchBinanceCandles extends Command
     public function handle()
     {
 
-          // 🔁 Hardcoded list of coin pairs
-             // ---------------- CONFIG ----------------
+        // 🔁 Hardcoded list of coin pairs
         $coins = ["BTC", "ICP", "DOT", "NEAR", "ORDI", "INJ", "NEIRO", "SOL", "OP", "XRP", "ADA"];
-        // $coins = ["BTCUSDT", "ICPUSDT", "DOTUSDT", "NEARUSDT", "ORDIUSDT", "INJUSDT", "NEIROUSDT", "SOLUSDT", "OPUSDT", "XRPUSDT", "ADAUSDT"];
         $interval = '15m';
         $limit = 3; // ✅ Changed from 73 to 3
         // ----------------------------------------
@@ -41,7 +39,8 @@ class FetchBinanceCandles extends Command
 
             $candles = $response->json();
 
-            for ($index = 1; $index < count($candles); $index++) {
+            $lastClosedIndex = count($candles) - 2; // ✅ آخری بند candle تک ہی loop
+            for ($index = 1; $index <= $lastClosedIndex; $index++) {
                 $prev = $candles[$index - 1];
                 $current = $candles[$index];
 
@@ -50,14 +49,6 @@ class FetchBinanceCandles extends Command
                 $currOpen = (float) $current[1];
                 $currClose = (float) $current[4];
 
-                // $tolerance = 0.000001;
-
-                // $isEngulfing = (
-                //     $prevOpen > $prevClose &&
-                //     $currClose > $currOpen &&
-                //     abs($prevClose - $currOpen) < $tolerance &&
-                //     $currClose > $prevOpen
-                // );
                 $isEngulfing = (
                     $prevOpen > $prevClose &&   // پچھلی bearish
                     $currClose > $currOpen &&   // موجودہ bullish
