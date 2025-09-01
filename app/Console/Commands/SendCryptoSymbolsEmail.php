@@ -44,8 +44,8 @@ class SendCryptoSymbolsEmail extends Command
             ->get();
 
         // send email
-        Mail::to('jawadjee0519@gmail.com')->send(new CryptoSymbolsMail($cryptoData));
-
+        $sendEmail = Mail::to('jawadjee0519@gmail.com')->send(new CryptoSymbolsMail($cryptoData));
+                // dd($sendEmail);
         $this->info('Crypto symbols email sent successfully!');
     }
 }

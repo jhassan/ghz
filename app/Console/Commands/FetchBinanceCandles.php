@@ -49,14 +49,77 @@ class FetchBinanceCandles extends Command
                 $currOpen = (float) $current[1];
                 $currClose = (float) $current[4];
 
-                $isEngulfing = (
+                // ✅ Basic engulfing condition
+                $isBasicEngulfing = (
                     $prevOpen > $prevClose &&   // پچھلی bearish
                     $currClose > $currOpen &&   // موجودہ bullish
-                    $currOpen <= $prevClose &&  // موجودہ open پچھلی close سے کم یا برابر
-                    $currClose > $prevOpen      // موجودہ close پچھلی open سے اوپر
+                    $currOpen <= $prevClose &&
+                    $currClose > $prevOpen
                 );
 
-                if (! $isEngulfing) continue;
+                if (! $isBasicEngulfing) continue;
+
+                // =====================
+                // ✅ Volume spike check
+                // =====================
+                $volume     = (float) $current[5];
+                $prevVolume = (float) $prev[5];
+                $isVolumeDriven = $volume > ($prevVolume * 1.5);  // 1.5x زیادہ
+                // =====================
+                // ✅ BTC base check
+                // =====================
+                $isBTCDriven = false;
+                if ($c === "BTC") {
+                    $isBTCDriven = true; // اگر خود BTC ہے
+                } else {
+                    $btcResp = Http::get('https://api.binance.com/api/v3/klines', [
+                        'symbol' => 'BTCUSDT',
+                        'interval' => $interval,
+                        'limit' => 3,
+                    ]);
+                    if ($btcResp->ok()) {
+                        $btcCandle = $btcResp->json();
+                        $btcPrev = $btcCandle[count($btcCandle) - 2];
+                        $btcOpen = (float) $btcPrev[1];
+                        $btcClose = (float) $btcPrev[4];
+                        if ($btcClose > $btcOpen && $currClose > $currOpen) {
+                            $isBTCDriven = true;
+                        }
+                    }
+                }
+
+                // =====================
+                // ✅ Dominance base check (BTCDOMUSDT Futures symbol)
+                // =====================
+                $isDomDriven = false;
+                $domResp = Http::get('https://fapi.binance.com/fapi/v1/klines', [
+                    'symbol' => 'BTCDOMUSDT',
+                    'interval' => $interval,
+                    'limit' => 3,
+                ]);
+                if ($domResp->ok()) {
+                    $domCandle = $domResp->json();
+                    $domPrev = $domCandle[count($domCandle) - 2];
+                    $domOpen = (float) $domPrev[1];
+                    $domClose = (float) $domPrev[4];
+                    $domChange = $domClose - $domOpen;
+
+                    if ($c === "BTC" && $domChange > 0) {
+                        $isDomDriven = true;   // BTC کے لیے dominance اوپر جانا
+                    }
+                    if ($c !== "BTC" && $domChange < 0) {
+                        $isDomDriven = true;   // Alts کے لیے dominance نیچے جانا
+                    }
+                }
+
+                // =====================
+                // ✅ Basis log
+                // =====================
+                $basis = [];
+                if ($isBTCDriven)    $basis[] = "BTC";
+                if ($isDomDriven)    $basis[] = "DOMINANCE";
+                if ($isVolumeDriven) $basis[] = "VOLUME";
+                $basisStr = empty($basis) ? "UNCLASSIFIED" : implode("|", $basis);
 
                 $openTime = Carbon::createFromTimestampMs($current[0])->setTimezone('Asia/Karachi');
 
@@ -76,7 +139,7 @@ class FetchBinanceCandles extends Command
                     'is_bullish_engulfing' => true,
                 ]);
 
-                $this->info("✅ Engulfing FOUND — $symbol | OpenTime: $openTime | O: $currOpen C: $currClose");
+                $this->info("✅ Engulfing FOUND — $symbol | OpenTime: $openTime | O: $currOpen C: $currClose | Basis: $basisStr");
             }
         }
 
