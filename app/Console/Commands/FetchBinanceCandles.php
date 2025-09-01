@@ -65,7 +65,7 @@ class FetchBinanceCandles extends Command
                 // =====================
                 $volume     = (float) $current[5];
                 $prevVolume = (float) $prev[5];
-                $isVolumeDriven = $volume > ($prevVolume * 1.5);  // 1.5x زیادہ
+                $isVolumeDriven = $volume > ($prevVolume * 0.15);  // 0.15x زیادہ
                 // =====================
                 // ✅ BTC base check
                 // =====================
