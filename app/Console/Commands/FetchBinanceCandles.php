@@ -50,14 +50,15 @@ class FetchBinanceCandles extends Command
                 $currClose = (float) $current[4];
 
                 // ✅ Basic engulfing condition
-                $isBasicEngulfing = (
+                // ✅ Strict engulfing condition (zero tolerance)
+                $isStrictEngulf = (
                     $prevOpen > $prevClose &&   // پچھلی bearish
                     $currClose > $currOpen &&   // موجودہ bullish
-                    $currOpen <= $prevClose &&
-                    $currClose > $prevOpen
+                    $currOpen == $prevClose &&  // bilkul same close → open
+                    $currClose == $prevOpen     // bilkul same open → close
                 );
 
-                if (! $isBasicEngulfing) continue;
+                if (! $isStrictEngulf) continue;
 
                 // =====================
                 // ✅ Volume spike check
