@@ -167,7 +167,7 @@ class FetchBinanceCandles extends Command
         $engulf = $currOpen <= $prevClose && $currClose >= $prevOpen;
 
         // Red candle must be at least 25% of green body
-        $minRedBody = $currBody * 0.25;
+        $minRedBody = $currBody * 1.5;
         $validRed = $prevBody >= $minRedBody;
 
         return ($prevOpen > $prevClose && $currClose > $currOpen && $engulf && $validRed);
