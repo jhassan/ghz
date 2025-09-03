@@ -65,7 +65,7 @@ class FetchBinanceCandles extends Command
                 // =====================
                 $volume     = (float) $current[5];
                 $prevVolume = (float) $prev[5];
-                $isVolumeDriven = $volume > ($prevVolume * 0.15);  // 0.15x زیادہ
+                $isVolumeDriven = $volume > ($prevVolume * 1.5);  // 1.5x زیادہ
                 // =====================
                 // ✅ BTC base check
                 // =====================
@@ -168,7 +168,7 @@ class FetchBinanceCandles extends Command
         $engulf = $currOpen <= $prevClose && $currClose >= $prevOpen;
 
         // Red candle must be at least 25% of green body
-        $minRedBody = $currBody * 1.5;
+        $minRedBody = $currBody * 0.15;
         $validRed = $prevBody >= $minRedBody;
 
         return ($prevOpen > $prevClose && $currClose > $currOpen && $engulf && $validRed);
