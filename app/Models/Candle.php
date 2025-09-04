@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Candle extends Model
 {
     protected $fillable = [
-        'symbol', 'interval', 'open_time', 'open', 'close', 'high', 'low', 'is_bullish_engulfing'
+        'symbol', 'interval', 'open_time', 'open', 'close', 'high', 'low', 'is_bullish_engulfing', 'basis'
     ];
 
     protected $casts = [

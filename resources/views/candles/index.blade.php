@@ -22,6 +22,7 @@
             <tr>
                 <th>Symbol</th>
                 <th>Open Time</th>
+                <th>Basis</th>
             </tr>
         </thead>
         <tbody>
@@ -29,6 +30,7 @@
                 <tr>
                     <td>{{ $candle->symbol }}</td>
                     <td>{{ date('d-m-Y H:i A', strtotime($candle->open_time)) }}</td>
+                    <td>{{ $candle->basis }}</td>
                 </tr>
             @empty
                 <tr>

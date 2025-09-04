@@ -51,11 +51,11 @@ class FetchBinanceCandles extends Command
 
                 // ✅ Basic engulfing condition
                 // ✅ Strict engulfing condition (zero tolerance)
-                $isStrictEngulf = (
-                    $prevOpen > $prevClose &&   // پچھلی bearish
-                    $currClose > $currOpen &&   // موجودہ bullish
-                    $currOpen == $prevClose &&  // bilkul same close → open
-                    $currClose == $prevOpen     // bilkul same open → close
+                $isEngulfing = (
+                    $prevOpen > $prevClose &&   // پچھلی candle bearish (open اوپر، close نیچے)
+                    $currClose > $currOpen &&   // موجودہ candle bullish (close اوپر، open نیچے)
+                    $currOpen == $prevClose &&  // نئی candle کا open بالکل برابر ہو پچھلی candle کے close کے ساتھ
+                    $currClose > $prevOpen      // نئی candle کا close لازمی پچھلی candle کے open سے اوپر جانا چاہیے
                 );
 
                 if (! $isStrictEngulf) continue;
@@ -133,6 +133,7 @@ class FetchBinanceCandles extends Command
                     'symbol' => $symbol,
                     'interval' => $interval,
                     'open_time' => $openTime,
+                    'basis' => $basisStr,
                     'open' => $currOpen,
                     'high' => (float) $current[2],
                     'low' => (float) $current[3],
