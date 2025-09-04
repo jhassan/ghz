@@ -15,6 +15,7 @@
             @endforeach
         </select>
         <button type="submit" class="btn btn-primary">Filter</button>
+
     </form>
 
     <table class="table table-bordered table-striped">
