@@ -58,7 +58,7 @@ class FetchBinanceCandles extends Command
                     $currClose > $prevOpen      // نئی candle کا close لازمی پچھلی candle کے open سے اوپر جانا چاہیے
                 );
 
-                if (! $isStrictEngulf) continue;
+                if (! $isEngulfing) continue;
 
                 // =====================
                 // ✅ Volume spike check
