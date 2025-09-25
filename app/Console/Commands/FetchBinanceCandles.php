@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Candle;
+use App\Models\Coins;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
@@ -17,7 +18,15 @@ class FetchBinanceCandles extends Command
     {
 
         // 🔁 Hardcoded list of coin pairs
-        $coins = ['BTC', 'ICP', 'DOT', 'NEAR', 'ORDI', 'INJ', 'NEIRO', 'SOL', 'OP', 'XRP', 'ADA', 'AVAX', 'AAVE', 'SUI'];
+        // $coins = ['BTC', 'ICP', 'DOT', 'NEAR', 'ORDI', 'INJ', 'NEIRO', 'SOL', 'OP', 'XRP', 'ADA', 'AVAX', 'AAVE', 'SUI'];
+        // Fetch setting row
+        $record = Coins::find(1); // or ->first()
+        // remove double quotes first
+        $clean = str_replace('"', '', $record->coins);
+
+        // now split by comma
+        $coins = array_map('trim', explode(',', $clean));
+
         $interval = '15m';
         $limit = 3; // ✅ Changed from 73 to 3
         // ----------------------------------------
